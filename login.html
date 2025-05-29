@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – VIBEON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #121212, #1e1e2f);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 350px;
+      padding: 30px;
+      background-color: #1f1f2e;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    h1 {
+      text-align: center;
+      color: #ff3b81;
+      margin-bottom: 20px;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #2c2c3f;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff3b81;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #ff5c9c;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .toggle a {
+      color: #4dd0e1;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="form-container">
+    <h1>Intră în cont</h1>
+    <input type="email" placeholder="Email" id="email" />
+    <input type="password" placeholder="Parolă" id="password" />
+    <button onclick="login()">Login</button>
+    <div class="toggle">
+      Nu ai cont? <a onclick="toggleForm()">Crează cont</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleForm() {
+      const container = document.getElementById('form-container');
+      container.innerHTML = `
+        <h1>Crează cont</h1>
+        <input type="email" placeholder="Email" id="email" />
+        <input type="password" placeholder="Parolă" id="password" />
+        <button onclick="register()">Crează cont</button>
+        <div class="toggle">
+          Ai deja cont? <a onclick="location.reload()">Login</a>
+        </div>
+      `;
+    }
+
+    function login() {
+      alert('Login simulare – pentru funcționalitate completă, integrăm Firebase.');
+    }
+    function register() {
+      alert('Înregistrare simulare – conectăm cu Firebase în etapa următoare.');
+    }
+  </script>
+</body>
+</html>
