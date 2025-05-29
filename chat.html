@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Privat – VIBEON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .chat-header {
+      background: #1f1f2e;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .chat-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ff3b81;
+    }
+    .chat-header span {
+      font-weight: 600;
+      color: #ff3b81;
+    }
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .message {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 0.9rem;
+    }
+    .me {
+      align-self: flex-end;
+      background: #ff3b81;
+      color: white;
+      border-bottom-right-radius: 0;
+    }
+    .them {
+      align-self: flex-start;
+      background: #2c2c3f;
+      color: white;
+      border-bottom-left-radius: 0;
+    }
+    .input-area {
+      display: flex;
+      padding: 10px;
+      background: #1f1f2e;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      margin-right: 10px;
+      background: #2c2c3f;
+      color: white;
+    }
+    .input-area button {
+      padding: 10px 18px;
+      background: #ff3b81;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-header">
+    <img src="https://i.imgur.com/mWq8XGQ.png" alt="User" />
+    <span>Radu, 28</span>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="message them">Hey! Ce faci? 😄</div>
+    <div class="message me">Hey! Tocmai am ajuns acasă. Tu?</div>
+    <div class="message them">Mă pregătesc de party diseară 💃</div>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="chatInput" placeholder="Scrie un mesaj...">
+    <button onclick="sendMessage()">Trimite</button>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (msg !== '') {
+        const newMsg = document.createElement('div');
+        newMsg.className = 'message me';
+        newMsg.textContent = msg;
+        document.getElementById('messages').appendChild(newMsg);
+        input.value = '';
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>
