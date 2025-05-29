@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil – VIBEON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #121212, #1e1e2f);
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    .profile {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #1f1f2e;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .profile img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #ff3b81;
+      margin-bottom: 15px;
+    }
+    h2 {
+      margin: 10px 0 5px;
+      color: #ff3b81;
+    }
+    .info {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+    .bio {
+      font-size: 0.95rem;
+      margin: 15px 0;
+    }
+    button {
+      padding: 10px 20px;
+      background: #ff3b81;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff5c9c;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile">
+    <img src="https://i.imgur.com/0y0y0y0.png" alt="Profil" />
+    <h2>Adonis, 35</h2>
+    <div class="info">Sibiu, România</div>
+    <div class="info">Orientare: Gay</div>
+    <p class="bio">Sunt o persoană deschisă, creativă, iubesc petrecerile și călătoriile. Caut conexiuni reale și momente memorabile.</p>
+    <button onclick="editProfile()">Editează profil</button>
+  </div>
+
+  <script>
+    function editProfile() {
+      alert("Funcție editare profil – va fi activată în versiunea cu Firebase.");
+    }
+  </script>
+</body>
+</html>
