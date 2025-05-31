@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Privat – VIBEON</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      padding: 1rem;
+      background-color: #1f1f1f;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      max-width: 70%;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+    }
+    .mine {
+      align-self: flex-end;
+      background-color: #ff3b81;
+      color: white;
+    }
+    .theirs {
+      align-self: flex-start;
+      background-color: #2a2a2a;
+    }
+    form {
+      display: flex;
+      padding: 1rem;
+      background-color: #1f1f1f;
+    }
+    input {
+      flex-grow: 1;
+      padding: 0.7rem;
+      border-radius: 10px;
+      border: none;
+      margin-right: 0.5rem;
+    }
+    button {
+      background-color: #ff3b81;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>Chat Privat</header>
+  <div class="messages" id="chatBox"></div>
+  <form id="chatForm">
+    <input type="text" id="messageInput" placeholder="Scrie un mesaj..." required />
+    <button type="submit">Trimite</button>
+  </form>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.appspot.com",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const partnerUid = "TEST_UID_123"; // înlocuiește cu un UID real la nevoie
+
+    let currentUser;
+    let chatId;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      currentUser = user;
+
+      chatId = currentUser.uid < partnerUid
+        ? `${currentUser.uid}_${partnerUid}`
+        : `${partnerUid}_${currentUser.uid}`;
+
+      const messagesRef = collection(db, "chats", chatId, "messages");
+      const q = query(messagesRef, orderBy("timestamp"));
+
+      onSnapshot(q, snapshot => {
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const msg = document.createElement("div");
+          msg.classList.add("message");
+          msg.classList.add(data.sender === currentUser.uid ? "mine" : "theirs");
+          msg.textContent = data.text;
+          chatBox.appendChild(msg);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    });
+
+    document.getElementById("chatForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const input = document.getElementById("messageInput");
+      const text = input.value.trim();
+      if (text && currentUser && chatId) {
+        const messagesRef = collection(db, "chats", chatId, "messages");
+        await addDoc(messagesRef, {
+          text,
+          sender: currentUser.uid,
+          timestamp: new Date()
+        });
+        input.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
