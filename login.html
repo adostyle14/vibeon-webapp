@@ -1,135 +1,91 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login – VIBEON</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIBEON – Autentificare</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-    * { box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #121212, #1e1e2f);
+      background: #121212;
       color: white;
-      margin: 0;
-      padding: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-    }
-    .container {
-      width: 100%;
-      max-width: 350px;
-      padding: 30px;
-      background-color: #1f1f2e;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      height: 100vh;
+      margin: 0;
+      text-align: center;
     }
     h1 {
-      text-align: center;
       color: #ff3b81;
       margin-bottom: 20px;
     }
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
+    input, button {
+      padding: 10px;
+      margin: 8px 0;
       border: none;
       border-radius: 8px;
-      background-color: #2c2c3f;
-      color: white;
+      width: 80%;
+      max-width: 300px;
     }
     button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background-color: #ff3b81;
+      background: #ff3b81;
       color: white;
-      font-weight: 600;
+      font-weight: bold;
       cursor: pointer;
-      margin-bottom: 10px;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background-color: #ff5c9c;
-    }
-    .toggle {
-      text-align: center;
-      margin-top: 15px;
-    }
-    .toggle a {
-      color: #4dd0e1;
-      cursor: pointer;
-      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="form-container">
-    <h1>Intră în cont</h1>
-    <input type="email" placeholder="Email" id="email" />
-    <input type="password" placeholder="Parolă" id="password" />
-    <button onclick="login()">Login</button>
-    <div class="toggle">
-      Nu ai cont? <a onclick="toggleForm()">Crează cont</a>
-    </div>
-  </div>
+  <h1>Autentificare VIBEON</h1>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Parolă">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Înregistrare</button>
+  <hr style="width: 80%; margin: 20px;">
+  <button onclick="loginGoogle()">Continuă cu Google</button>
 
-  <script>
-    function toggleForm() {
-      const container = document.getElementById('form-container');
-      container.innerHTML = `
-        <h1>Crează cont</h1>
-        <input type="email" placeholder="Email" id="email" />
-        <input type="password" placeholder="Parolă" id="password" />
-        <button onclick="register()">Crează cont</button>
-        <div class="toggle">
-          Ai deja cont? <a onclick="location.reload()">Login</a>
-        </div>
-      `;
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.firebasestorage.app",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => window.location.href = "profile.html")
+        .catch(err => alert("Eroare: " + err.message));
     }
 
-    function login() {
-      alert('Login simulare – pentru funcționalitate completă, integrăm Firebase.');
+    window.register = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => window.location.href = "profile.html")
+        .catch(err => alert("Eroare: " + err.message));
     }
-    function register() {
-      alert('Înregistrare simulare – conectăm cu Firebase în etapa următoare.');
+
+    window.loginGoogle = function () {
+      signInWithPopup(auth, provider)
+        .then(() => window.location.href = "profile.html")
+        .catch(err => alert("Eroare Google: " + err.message));
     }
   </script>
-
-<nav style="
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1f1f2e;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 60px;
-  border-top: 1px solid #333;
-  font-family: 'Poppins', sans-serif;
-  z-index: 100;
-">
-  <a href="index.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🏠<br>Acasă
-  </a>
-  <a href="nearby.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    📍<br>Nearby
-  </a>
-  <a href="events.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🎉<br>Party
-  </a>
-  <a href="stay.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🛏️<br>Cazare
-  </a>
-  <a href="chat.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    💬<br>Chat
-  </a>
-</nav>
 </body>
 </html>

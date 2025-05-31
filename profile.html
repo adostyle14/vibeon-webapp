@@ -1,109 +1,78 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profil – VIBEON</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profilul Meu – VIBEON</title>
+  <link rel="icon" href="favicon.ico" />
   <style>
-    * { box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #121212, #1e1e2f);
+      background: #121212;
       color: white;
-      margin: 0;
-      padding: 20px;
-    }
-    .profile {
-      max-width: 400px;
-      margin: 0 auto;
-      background: #1f1f2e;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       text-align: center;
+      margin: 0;
     }
-    .profile img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 3px solid #ff3b81;
-      margin-bottom: 15px;
-    }
-    h2 {
-      margin: 10px 0 5px;
+    h1 {
       color: #ff3b81;
     }
-    .info {
-      font-size: 0.95rem;
-      color: #ccc;
-      margin-bottom: 10px;
-    }
-    .bio {
-      font-size: 0.95rem;
-      margin: 15px 0;
+    p {
+      margin: 10px 0;
     }
     button {
-      padding: 10px 20px;
-      background: #ff3b81;
+      background-color: #ff3b81;
+      color: white;
       border: none;
       border-radius: 8px;
-      color: white;
-      font-weight: 600;
+      padding: 12px 24px;
+      font-size: 1rem;
       cursor: pointer;
-    }
-    button:hover {
-      background: #ff5c9c;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="profile">
-    <img src="https://i.imgur.com/0y0y0y0.png" alt="Profil" />
-    <h2>Adonis, 35</h2>
-    <div class="info">Sibiu, România</div>
-    <div class="info">Orientare: Gay</div>
-    <p class="bio">Sunt o persoană deschisă, creativă, iubesc petrecerile și călătoriile. Caut conexiuni reale și momente memorabile.</p>
-    <button onclick="editProfile()">Editează profil</button>
-  </div>
+  <h1>Bine ai revenit!</h1>
+  <p id="user-info">Se încarcă datele...</p>
+  <button onclick="logout()">Logout</button>
 
-  <script>
-    function editProfile() {
-      alert("Funcție editare profil – va fi activată în versiunea cu Firebase.");
-    }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.firebasestorage.app",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const userInfo = document.getElementById("user-info");
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        userInfo.innerText = `Autentificat ca: ${user.email}`;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    };
   </script>
-
-<nav style="
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1f1f2e;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 60px;
-  border-top: 1px solid #333;
-  font-family: 'Poppins', sans-serif;
-  z-index: 100;
-">
-  <a href="index.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🏠<br>Acasă
-  </a>
-  <a href="nearby.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    📍<br>Nearby
-  </a>
-  <a href="events.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🎉<br>Party
-  </a>
-  <a href="stay.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    🛏️<br>Cazare
-  </a>
-  <a href="chat.html" style="color: #ccc; text-decoration: none; font-size: 12px; text-align: center;">
-    💬<br>Chat
-  </a>
-</nav>
 </body>
 </html>
