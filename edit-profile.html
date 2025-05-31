@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editează Profil – VIBEON</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, textarea, button {
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background: #ff3b81;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+      text-align: left;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Editează Profilul Tău</h1>
+
+  <label for="name">Nume</label>
+  <input type="text" id="name" placeholder="Ex: Alex" />
+
+  <label for="age">Vârstă</label>
+  <input type="number" id="age" min="18" max="99" placeholder="Ex: 27" />
+
+  <label for="city">Oraș</label>
+  <input type="text" id="city" placeholder="Ex: București" />
+
+  <label for="bio">Descriere</label>
+  <textarea id="bio" placeholder="Scrie ceva despre tine..."></textarea>
+
+  <label for="photos">Poze de profil (max. 3)</label>
+  <input type="file" id="photos" accept="image/*" multiple />
+
+  <button onclick="saveProfile()">Salvează Profilul</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.appspot.com",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    let currentUser;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        currentUser = user;
+      }
+    });
+
+    window.saveProfile = async () => {
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const city = document.getElementById("city").value;
+      const bio = document.getElementById("bio").value;
+      const files = document.getElementById("photos").files;
+
+      if (files.length > 3) {
+        alert("Poți urca maxim 3 poze.");
+        return;
+      }
+
+      const photoURLs = [];
+      for (let i = 0; i < files.length; i++) {
+        const fileRef = ref(storage, `profiles/${currentUser.uid}/photo${i + 1}`);
+        await uploadBytes(fileRef, files[i]);
+        const url = await getDownloadURL(fileRef);
+        photoURLs.push(url);
+      }
+
+      const userDoc = doc(db, "users", currentUser.uid);
+      await setDoc(userDoc, {
+        name, age, city, bio,
+        photos: photoURLs,
+        uid: currentUser.uid,
+        email: currentUser.email
+      });
+
+      alert("Profil salvat cu succes!");
+      window.location.href = "profile.html";
+    };
+  </script>
+</body>
+</html>
