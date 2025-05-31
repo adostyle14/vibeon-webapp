@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Debug – VIBEON</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #121212;
+      color: white;
+      padding: 2rem;
+    }
+    .log {
+      background: #1f1f1f;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background-color: #ff3b81;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Debug Chat Firebase</h1>
+  <p><strong>User autentificat:</strong> <span id="currentUid">–</span></p>
+  <p><strong>UID partener:</strong> <span id="partnerUid">TEST_UID_123</span></p>
+  <button onclick="sendTestMessage()">Trimite mesaj de test</button>
+  <div class="log" id="logOutput">Conectare Firebase...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.appspot.com",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const logBox = document.getElementById("logOutput");
+
+    const partnerUid = "TEST_UID_123";
+    document.getElementById("partnerUid").textContent = partnerUid;
+
+    let currentUser;
+    let chatId;
+
+    function log(msg) {
+      logBox.textContent += "\n" + msg;
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById("currentUid").textContent = currentUser.uid;
+        chatId = currentUser.uid < partnerUid
+          ? `${currentUser.uid}_${partnerUid}`
+          : `${partnerUid}_${currentUser.uid}`;
+        log("✅ Autentificat ca: " + currentUser.email);
+        log("🔗 Chat ID: " + chatId);
+      } else {
+        log("❌ Nicio autentificare. Redirecționez...");
+        window.location.href = "login.html";
+      }
+    });
+
+    window.sendTestMessage = async () => {
+      if (!currentUser || !chatId) return;
+
+      const text = "Mesaj test – " + new Date().toLocaleTimeString();
+      try {
+        await addDoc(collection(db, "chats", chatId, "messages"), {
+          text,
+          sender: currentUser.uid,
+          timestamp: new Date()
+        });
+        log("✅ Mesaj de test trimis!");
+      } catch (err) {
+        log("❌ Eroare la trimitere: " + err.message);
+      }
+    };
+  </script>
+</body>
+</html>
