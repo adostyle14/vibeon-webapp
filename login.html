@@ -3,60 +3,30 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
+  <title>Autentificare VIBEON</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VIBEON – Autentificare</title>
   <link rel="icon" href="favicon.ico" />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
-    }
-    h1 {
-      color: #ff3b81;
-      margin-bottom: 20px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 300px;
-    }
-    button {
-      background: #ff3b81;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
 </head>
-<body>
+<body style="background:#111; color:#fff; font-family:sans-serif; text-align:center; padding:2rem;">
   <h1>Autentificare VIBEON</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Parolă">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Înregistrare</button>
-  <hr style="width: 80%; margin: 20px;">
-  <button onclick="loginGoogle()">Continuă cu Google</button>
+  <div style="max-width:400px;margin:auto;">
+    <input id="email" placeholder="Email" type="email" style="display:block;width:100%;margin:10px 0;padding:10px;" />
+    <input id="password" placeholder="Parolă" type="password" style="display:block;width:100%;margin:10px 0;padding:10px;" />
+    <button id="loginBtn" style="padding:10px 20px;background:#ff3b81;border:none;color:white;border-radius:8px;margin:5px;">Login</button>
+    <button id="signupBtn" style="padding:10px 20px;background:#333;border:none;color:white;border-radius:8px;margin:5px;">Înregistrare</button>
+    <hr style="margin:2rem 0;">
+    <button id="googleBtn" style="padding:10px 20px;background:#fff;color:#000;border:none;border-radius:8px;">Continuă cu Google</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
       authDomain: "vibeon-c32ca.firebaseapp.com",
       projectId: "vibeon-c32ca",
-      storageBucket: "vibeon-c32ca.firebasestorage.app",
+      storageBucket: "vibeon-c32ca.appspot.com",
       messagingSenderId: "164249629570",
       appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
     };
@@ -65,27 +35,36 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    window.login = function () {
+    document.getElementById("loginBtn").addEventListener("click", async () => {
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => window.location.href = "profile.html")
-        .catch(err => alert("Eroare: " + err.message));
-    }
+      const pass = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        window.location.href = "profile.html"; // 🔁 redirect
+      } catch (err) {
+        alert("Eroare: " + err.message);
+      }
+    });
 
-    window.register = function () {
+    document.getElementById("signupBtn").addEventListener("click", async () => {
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => window.location.href = "profile.html")
-        .catch(err => alert("Eroare: " + err.message));
-    }
+      const pass = document.getElementById("password").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        window.location.href = "profile.html"; // 🔁 redirect
+      } catch (err) {
+        alert("Eroare: " + err.message);
+      }
+    });
 
-    window.loginGoogle = function () {
-      signInWithPopup(auth, provider)
-        .then(() => window.location.href = "profile.html")
-        .catch(err => alert("Eroare Google: " + err.message));
-    }
+    document.getElementById("googleBtn").addEventListener("click", async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        window.location.href = "profile.html"; // 🔁 redirect
+      } catch (err) {
+        alert("Eroare Google: " + err.message);
+      }
+    });
   </script>
 </body>
 </html>
