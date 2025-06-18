@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autentificare VIBEON</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 59, 129, 0.2);
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      color: #ff3b81;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1.2rem;
+      background: #ff3b81;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e60073;
+    }
+    .google-btn {
+      background: #4285F4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Intră în cont</h1>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Parolă" required />
+    <button id="loginBtn">Login</button>
+    <button id="googleLogin" class="google-btn">Continuă cu Google</button>
+    <p style="text-align:center; margin-top:1rem;">
+      Nu ai cont? <a href="complete-profile.html" style="color:#64d3ff;">Creează cont</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDbD3sH5CxWaoAf69ZQB1YF3whdRSIIBw",
+      authDomain: "vibeon-c32ca.firebaseapp.com",
+      projectId: "vibeon-c32ca",
+      storageBucket: "vibeon-c32ca.appspot.com",
+      messagingSenderId: "164249629570",
+      appId: "1:164249629570:web:ec9370dc8e0080d3cf559b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          alert("Eroare: " + error.message);
+        });
+    });
+
+    document.getElementById("googleLogin").addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          alert("Eroare Google: " + error.message);
+        });
+    });
+  </script>
+</body>
+</html>
